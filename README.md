@@ -1,71 +1,110 @@
-# Static Website Deployment on EC2 with Nginx
+# Static Website Hosting on AWS S3
 
-A simple static website built with HTML and CSS, deployed on an AWS EC2 instance using Nginx on port 80.
+## Project Overview
+
+This project demonstrates how to host a simple static website using AWS S3.
+The website consists of basic HTML and CSS files and is publicly accessible via an S3 static website endpoint.
+
+---
+
+## Technologies Used
+
+* AWS S3 (Simple Storage Service)
+* HTML5
+* CSS3
 
 ---
 
 ## Project Structure
-travel-website/
-
-├── index.html  
-├── styles.css
-
-
----
-
-## Prerequisites
-
-- AWS EC2 instance with Linux (Ubuntu/CentOS/Alpine)  
-- Nginx installed and running  
-- Security group allowing inbound HTTP (port 80) traffic
-
----
-
-## Deployment Steps
-
-1. **Connect to your EC2 instance**:
 
 ```bash
-ssh -i key.pem ec2-user@<ec2-public-ip>
+├── index.html
+├── style.css
+└── README.md
 ```
-  
-2. **Install Nginx (if not already installed)**:
 
-For Ubuntu/Debian:
-```
-sudo apt update
-sudo apt install nginx -y
-```  
-3. **Start and enable Nginx**:
-```
-sudo systemctl start nginx
-sudo systemctl enable nginx
-```  
-4. **Upload website files**:
-Copy your HTML, CSS, and other assets to Nginx's default web directory:
-```
-sudo cp -r /local/path/* /var/www/html/
-```
-  
-5. **Set proper permissions**:
-```
-sudo chown -R www-data:www-data /var/www/html
-sudo chmod -R 755 /var/www/html
-```  
-6. **Test Website**:
-Open a browser and go to:
-```
-http://<ec2-public-ip>/
-```
-  
-**Notes
+---
 
-Nginx serves static files by default from /var/www/html/.  
-Port 80 must be open in your EC2 Security Group.  
-For future updates, simply replace files in /var/www/html/ and reload Nginx:**
+## Steps to Deploy
 
+### 1. Create an S3 Bucket
+
+* Go to AWS S3 console
+* Create a bucket with a unique name
+* Disable **Block all public access**
+
+---
+
+### 2. Upload Files
+
+* Upload `index.html` and `style.css` to the bucket
+
+---
+
+### 3. Configure Bucket Policy (Public Access)
+
+Add the following bucket policy to allow public access to all files:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicReadGetObject",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::hassan-first-static-site/*"
+    }
+  ]
+}
 ```
-sudo systemctl reload nginx
-```
-Author  
+
+> Replace `hassan-first-static-site` with your actual bucket name.
+
+---
+
+### 4. Enable Static Website Hosting
+
+* Go to **Properties → Static Website Hosting**
+* Enable hosting
+* Set:
+
+  * Index document: `index.html`
+
+---
+
+### 5. Access Website
+
+* Use the **S3 Website Endpoint URL** to access your live website
+
+---
+
+## Live Demo
+
+👉 http://your-bucket-name.s3-website-region.amazonaws.com
+
+*(Replace with your actual endpoint URL)*
+
+---
+
+## Notes
+
+* Ensure bucket policy allows public read access
+* Make sure file paths in `index.html` are correct
+* S3 static websites support only HTTP (not HTTPS)
+
+---
+
+## Learning Outcome
+
+* Understanding of AWS S3
+* Hosting static websites in the cloud
+* Managing permissions and bucket policies
+
+---
+
+## 👨‍💻 Author
+
 Hassan Mehmood
+Cloud & DevOps Engineer
